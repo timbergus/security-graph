@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import ReactFlow, {
   MiniMap,
   Controls,
@@ -6,24 +6,103 @@ import ReactFlow, {
   useNodesState,
   useEdgesState,
   addEdge,
+  Panel,
 } from 'reactflow'
+import { GroupNode } from './nodes/GroupNode'
+import { PermissionNode } from './nodes/PermissionNode'
+import { UserNode } from './nodes/UserNode'
+import { CompanyNode } from './nodes/CompanyNode'
 
 const initialNodes = [
-  { id: '1', position: { x: 200, y: 100 }, data: { label: 'Group' } },
-  { id: '2', position: { x: 0, y: 0 }, data: { label: 'Permission 1' } },
-  { id: '3', position: { x: 400, y: 0 }, data: { label: 'Permission 2' } },
-  { id: '4', position: { x: 0, y: 200 }, data: { label: 'User 1' } },
-  { id: '5', position: { x: 400, y: 200 }, data: { label: 'User 2' } },
+  {
+    id: 'group-1',
+    position: { x: 220, y: 50 },
+    data: { label: 'Group' },
+    type: 'GroupNode',
+  },
+  {
+    id: 'permission-1',
+    position: { x: 0, y: 0 },
+    data: { label: 'Permission 1' },
+    type: 'PermissionNode',
+  },
+  {
+    id: 'permission-2',
+    position: { x: 0, y: 100 },
+    data: { label: 'Permission 2' },
+    type: 'PermissionNode',
+  },
+  {
+    id: 'user-1',
+    position: { x: 400, y: 0 },
+    data: { label: 'User 1' },
+    type: 'UserNode',
+  },
+  {
+    id: 'user-2',
+    position: { x: 400, y: 100 },
+    data: { label: 'User 2' },
+    type: 'UserNode',
+  },
+  {
+    id: 'company-1',
+    position: { x: 100, y: 250 },
+    data: { label: 'Company 1' },
+    type: 'CompanyNode',
+  },
+  {
+    id: 'company-2',
+    position: { x: 300, y: 250 },
+    data: { label: 'Company 2' },
+    type: 'CompanyNode',
+  },
 ]
 
 const initialEdges = [
-  { id: 'pg1', source: '2', target: '1' },
-  { id: 'pg2', source: '3', target: '1' },
-  { id: 'gu1', source: '1', target: '4' },
-  { id: 'gu2', source: '1', target: '5' },
+  {
+    id: 'p1-g1',
+    source: 'permission-1',
+    sourceHandle: 'socket-1',
+    target: 'group-1',
+  },
+  {
+    id: 'p2-g1',
+    source: 'permission-2',
+    sourceHandle: 'socket-1',
+    target: 'group-1',
+  },
+  {
+    id: 'u1-g1',
+    source: 'user-1',
+    sourceHandle: 'socket-2',
+    target: 'group-1',
+  },
+  {
+    id: 'u2-g1',
+    source: 'user-2',
+    sourceHandle: 'socket-2',
+    target: 'group-1',
+  },
+  {
+    id: 'c1-g1',
+    source: 'company-1',
+    sourceHandle: 'socket-3',
+    target: 'group-1',
+  },
+  {
+    id: 'c2-g1',
+    source: 'company-2',
+    sourceHandle: 'socket-3',
+    target: 'group-1',
+  },
 ]
 
 export const App = () => {
+  const nodeTypes = useMemo(
+    () => ({ GroupNode, PermissionNode, UserNode, CompanyNode }),
+    []
+  )
+
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
 
@@ -33,17 +112,22 @@ export const App = () => {
   )
 
   return (
-    <div className="static h-screen w-screen">
-      <div className="absolute bottom-0 left-0 h-[140px] w-[60px] bg-white" />
+    <div className="h-screen w-screen">
       <ReactFlow
         nodes={nodes}
         edges={edges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
+        fitView
+        fitViewOptions={{ padding: 2 }}
+        nodeTypes={nodeTypes}
       >
-        <MiniMap draggable />
-        <Controls />
+        <Panel position="top-left" className="bg-white p-10 font-bold">
+          Security Graph
+        </Panel>
+        <MiniMap zoomable pannable />
+        <Controls className="bg-white" />
         <Background />
       </ReactFlow>
     </div>
