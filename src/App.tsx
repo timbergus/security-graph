@@ -7,13 +7,18 @@ import ReactFlow, {
   useEdgesState,
   addEdge,
   Panel,
+  Node,
+  Edge,
 } from 'reactflow'
+
+// Custom nodes.
 import { GroupNode } from './nodes/GroupNode'
 import { PermissionNode } from './nodes/PermissionNode'
 import { UserNode } from './nodes/UserNode'
 import { CompanyNode } from './nodes/CompanyNode'
+import { NodeData } from './types/Data'
 
-const initialNodes = [
+const initialNodes: Node<NodeData>[] = [
   {
     id: 'group-1',
     position: { x: 220, y: 50 },
@@ -58,44 +63,59 @@ const initialNodes = [
   },
 ]
 
-const initialEdges = [
+const initialEdges: Edge[] = [
   {
     id: 'p1-g1',
-    source: 'permission-1',
+    source: 'group-1',
     sourceHandle: 'socket-1',
-    target: 'group-1',
+    target: 'permission-1',
   },
   {
     id: 'p2-g1',
-    source: 'permission-2',
+    source: 'group-1',
     sourceHandle: 'socket-1',
-    target: 'group-1',
+    target: 'permission-2',
   },
   {
     id: 'u1-g1',
-    source: 'user-1',
+    source: 'group-1',
     sourceHandle: 'socket-2',
-    target: 'group-1',
+    target: 'user-1',
   },
   {
     id: 'u2-g1',
-    source: 'user-2',
+    source: 'group-1',
     sourceHandle: 'socket-2',
-    target: 'group-1',
+    target: 'user-2',
   },
   {
     id: 'c1-g1',
-    source: 'company-1',
+    source: 'group-1',
     sourceHandle: 'socket-3',
-    target: 'group-1',
+    target: 'company-1',
   },
   {
     id: 'c2-g1',
-    source: 'company-2',
+    source: 'group-1',
     sourceHandle: 'socket-3',
-    target: 'group-1',
+    target: 'company-2',
   },
 ]
+
+const nodeColor = ({ type }: Node) => {
+  switch (type) {
+    case 'GroupNode':
+      return 'rgb(217 119 6)'
+    case 'PermissionNode':
+      return 'rgb(2 132 199)'
+    case 'UserNode':
+      return 'rgb(22 163 74)'
+    case 'CompanyNode':
+      return 'rgb(79 70 229)'
+    default:
+      return '#fff'
+  }
+}
 
 export const App = () => {
   const nodeTypes = useMemo(
@@ -126,7 +146,7 @@ export const App = () => {
         <Panel position="top-left" className="bg-white p-10 font-bold">
           Security Graph
         </Panel>
-        <MiniMap zoomable pannable />
+        <MiniMap nodeColor={nodeColor} zoomable pannable />
         <Controls className="bg-white" />
         <Background />
       </ReactFlow>
