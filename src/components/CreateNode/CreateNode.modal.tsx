@@ -1,7 +1,13 @@
-import { FC, Fragment, useRef, useState } from 'react'
+import { FC, Fragment } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { useAtom } from 'jotai'
 import { isOpenAtom } from './createNode.atom'
+import { SubmitHandler } from 'react-hook-form'
+import { CreateNodeForm } from './createNode.form'
+
+type FormInput = {
+  name: string
+}
 
 type CreateNodeModalProps = {
   onCreate: (name: string) => void
@@ -10,18 +16,18 @@ type CreateNodeModalProps = {
 export const CreateNodeModal: FC<CreateNodeModalProps> = ({ onCreate }) => {
   const [isOpen, setIsOpen] = useAtom(isOpenAtom)
 
-  const [name, setName] = useState('')
+  const onSubmit: SubmitHandler<FormInput> = ({ name }) => {
+    onCreate(name)
+    setIsOpen(false)
+  }
 
-  const cancelButtonRef = useRef(null)
+  const handleCancel = () => {
+    setIsOpen(false)
+  }
 
   return (
     <Transition.Root show={isOpen} as={Fragment}>
-      <Dialog
-        as="div"
-        className="relative z-10"
-        initialFocus={cancelButtonRef}
-        onClose={setIsOpen}
-      >
+      <Dialog as="div" className="relative z-10" onClose={setIsOpen}>
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -53,50 +59,20 @@ export const CreateNodeModal: FC<CreateNodeModalProps> = ({ onCreate }) => {
                   >
                     Create New Node
                   </Dialog.Title>
-                  <div>
-                    <input
-                      type="text"
-                      name="name"
-                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                      placeholder="Node's name"
-                      aria-describedby="name-description"
-                      value={name}
-                      onChange={(event) => setName(event.currentTarget.value)}
-                      onKeyDown={(event) => {
-                        if (event.key === 'Enter') {
-                          onCreate(name)
-                          setName('')
-                        }
-                      }}
-                    />
-                    <p
-                      className="mt-2 text-sm text-gray-500"
-                      id="email-description"
-                    >
-                      This will be your new node
-                    </p>
-                  </div>
+                  <CreateNodeForm onSubmit={onSubmit} />
                 </div>
                 <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
                   <button
-                    type="button"
+                    type="submit"
+                    form="create-node-form"
                     className="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:col-start-2 sm:text-sm"
-                    onClick={() => {
-                      onCreate(name)
-                      setName('')
-                      setIsOpen(false)
-                    }}
                   >
                     Create
                   </button>
                   <button
                     type="button"
                     className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:col-start-1 sm:mt-0 sm:text-sm"
-                    onClick={() => {
-                      setName('')
-                      setIsOpen(false)
-                    }}
-                    ref={cancelButtonRef}
+                    onClick={handleCancel}
                   >
                     Cancel
                   </button>
