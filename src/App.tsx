@@ -1,4 +1,10 @@
-import { useCallback, useMemo } from 'react'
+import { DragEvent, MouseEvent, useCallback, useMemo, useState } from 'react'
+import { useSetAtom } from 'jotai'
+import { isOpenAtom } from './components/CreateNode/createNode.atom'
+import { CreateNodeModal } from './components/CreateNode/CreateNode.modal'
+import { ToolsPanel } from './components/ToolsPanel'
+import { initialNodes } from './database/initialNodes'
+import { initialEdges } from './database/initialEdges'
 import ReactFlow, {
   MiniMap,
   Controls,
@@ -6,9 +12,8 @@ import ReactFlow, {
   useNodesState,
   useEdgesState,
   addEdge,
-  Panel,
   Node,
-  Edge,
+  Edge, // TODO Add rule to highlight this!!
 } from 'reactflow'
 
 // Custom nodes.
@@ -16,91 +21,6 @@ import { GroupNode } from './nodes/GroupNode'
 import { PermissionNode } from './nodes/PermissionNode'
 import { UserNode } from './nodes/UserNode'
 import { CompanyNode } from './nodes/CompanyNode'
-import { NodeData } from './types/Data'
-
-const initialNodes: Node<NodeData>[] = [
-  {
-    id: 'group-1',
-    position: { x: 220, y: 50 },
-    data: { label: 'Group' },
-    type: 'GroupNode',
-  },
-  {
-    id: 'permission-1',
-    position: { x: 0, y: 0 },
-    data: { label: 'Permission 1' },
-    type: 'PermissionNode',
-  },
-  {
-    id: 'permission-2',
-    position: { x: 0, y: 100 },
-    data: { label: 'Permission 2' },
-    type: 'PermissionNode',
-  },
-  {
-    id: 'user-1',
-    position: { x: 400, y: 0 },
-    data: { label: 'User 1' },
-    type: 'UserNode',
-  },
-  {
-    id: 'user-2',
-    position: { x: 400, y: 100 },
-    data: { label: 'User 2' },
-    type: 'UserNode',
-  },
-  {
-    id: 'company-1',
-    position: { x: 100, y: 250 },
-    data: { label: 'Company 1' },
-    type: 'CompanyNode',
-  },
-  {
-    id: 'company-2',
-    position: { x: 300, y: 250 },
-    data: { label: 'Company 2' },
-    type: 'CompanyNode',
-  },
-]
-
-const initialEdges: Edge[] = [
-  {
-    id: 'p1-g1',
-    source: 'group-1',
-    sourceHandle: 'socket-1',
-    target: 'permission-1',
-  },
-  {
-    id: 'p2-g1',
-    source: 'group-1',
-    sourceHandle: 'socket-1',
-    target: 'permission-2',
-  },
-  {
-    id: 'u1-g1',
-    source: 'group-1',
-    sourceHandle: 'socket-2',
-    target: 'user-1',
-  },
-  {
-    id: 'u2-g1',
-    source: 'group-1',
-    sourceHandle: 'socket-2',
-    target: 'user-2',
-  },
-  {
-    id: 'c1-g1',
-    source: 'group-1',
-    sourceHandle: 'socket-3',
-    target: 'company-1',
-  },
-  {
-    id: 'c2-g1',
-    source: 'group-1',
-    sourceHandle: 'socket-3',
-    target: 'company-2',
-  },
-]
 
 const nodeColor = ({ type }: Node) => {
   switch (type) {
@@ -113,7 +33,7 @@ const nodeColor = ({ type }: Node) => {
     case 'CompanyNode':
       return 'rgb(79 70 229)'
     default:
-      return '#fff'
+      return 'rgb(255,255,255)'
   }
 }
 
@@ -126,10 +46,42 @@ export const App = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
 
+  const setIsOpen = useSetAtom(isOpenAtom)
+  const [type, setType] = useState('')
+
   const onConnect = useCallback(
     (params: any) => setEdges((eds) => addEdge(params, eds)),
     [setEdges]
   )
+
+  const handleDragStart = (event: DragEvent<HTMLDivElement>) => {
+    const type = event.currentTarget.getAttribute('data-type')
+    if (type) {
+      setType(type)
+    }
+  }
+
+  const handleDragOver = (event: DragEvent<HTMLDivElement>) => {
+    event.preventDefault()
+  }
+
+  const handleDrop = (event: DragEvent<HTMLDivElement>) => {
+    event.preventDefault()
+    setIsOpen(true)
+  }
+
+  const handleCreate = (label: string) => {
+    setIsOpen(false)
+    setNodes((state) => [
+      ...state,
+      {
+        id: label.toUpperCase(),
+        position: { x: 0, y: 0 },
+        data: { label },
+        type,
+      },
+    ])
+  }
 
   return (
     <div className="h-screen w-screen">
@@ -142,14 +94,15 @@ export const App = () => {
         fitView
         fitViewOptions={{ padding: 2 }}
         nodeTypes={nodeTypes}
+        onDrop={handleDrop}
+        onDragOver={handleDragOver}
       >
-        <Panel position="top-left" className="bg-white p-10 font-bold">
-          Security Graph
-        </Panel>
+        <ToolsPanel onDragStart={handleDragStart} />
         <MiniMap nodeColor={nodeColor} zoomable pannable />
         <Controls className="bg-white" />
         <Background />
       </ReactFlow>
+      <CreateNodeModal onCreate={handleCreate} />
     </div>
   )
 }
