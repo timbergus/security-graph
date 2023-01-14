@@ -1,4 +1,4 @@
-import { DragEvent, MouseEvent, useCallback, useMemo, useState } from 'react'
+import { DragEvent, useCallback, useMemo, useState } from 'react'
 import { useSetAtom } from 'jotai'
 import { isOpenAtom } from './components/CreateNode/createNode.atom'
 import { CreateNodeModal } from './components/CreateNode/CreateNode.modal'
@@ -13,7 +13,7 @@ import ReactFlow, {
   useEdgesState,
   addEdge,
   Node,
-  Edge, // TODO Add rule to highlight this!!
+  Connection,
 } from 'reactflow'
 
 // Custom nodes.
@@ -50,7 +50,7 @@ export const App = () => {
   const [type, setType] = useState('')
 
   const onConnect = useCallback(
-    (params: any) => setEdges((eds) => addEdge(params, eds)),
+    (params: Connection) => setEdges((eds) => addEdge(params, eds)),
     [setEdges]
   )
 
