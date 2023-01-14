@@ -1,9 +1,10 @@
-import { zodResolver } from '@hookform/resolvers/zod'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import { schema } from './createNode.schema'
-import classNames from 'classnames'
 import { ExclamationCircleIcon } from '@heroicons/react/20/solid'
+import { zodResolver } from '@hookform/resolvers/zod'
+import classNames from 'classnames'
 import { FC } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
+
+import { schema } from './createNode.schema'
 
 type FormInput = {
   name: string

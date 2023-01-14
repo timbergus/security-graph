@@ -1,4 +1,5 @@
 import { Node } from 'reactflow'
+
 import { NodeData } from '../types/Data'
 
 export enum NodeType {

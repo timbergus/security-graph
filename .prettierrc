@@ -1,4 +1,15 @@
 {
   "semi": false,
-  "singleQuote": true
+  "singleQuote": true,
+  "importOrder": [
+    ".css$",
+    "<THIRD_PARTY_MODULES>",
+    "^./types/(.*)$",
+    "^./database/(.*)$",
+    "^./components/(.*)$",
+    "^./nodes/(.*)$",
+    "^[./]"
+  ],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true
 }

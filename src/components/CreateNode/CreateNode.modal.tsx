@@ -1,9 +1,10 @@
-import { FC, Fragment } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { useAtom } from 'jotai'
-import { isOpenAtom } from './createNode.atom'
+import { FC, Fragment } from 'react'
 import { SubmitHandler } from 'react-hook-form'
+
 import { CreateNodeForm } from './CreateNode.form'
+import { isOpenAtom } from './createNode.atom'
 
 type FormInput = {
   name: string
@@ -37,7 +38,7 @@ export const CreateNodeModal: FC<CreateNodeModalProps> = ({ onCreate }) => {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+          <div className="fixed inset-0 bg-gray-500/75 transition-opacity" />
         </Transition.Child>
 
         <div className="fixed inset-0 z-10 overflow-y-auto">
@@ -51,7 +52,7 @@ export const CreateNodeModal: FC<CreateNodeModalProps> = ({ onCreate }) => {
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
+              <Dialog.Panel className="relative overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
                 <div className="mt-3 grid gap-4 sm:mt-5">
                   <Dialog.Title
                     as="h3"

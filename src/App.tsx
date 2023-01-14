@@ -1,26 +1,27 @@
-import { DragEvent, useCallback, useMemo, useState } from 'react'
 import { useSetAtom } from 'jotai'
-import { isOpenAtom } from './components/CreateNode/createNode.atom'
-import { CreateNodeModal } from './components/CreateNode/CreateNode.modal'
-import { ToolsPanel } from './components/ToolsPanel'
-import { initialNodes } from './database/initialNodes'
-import { initialEdges } from './database/initialEdges'
+import { DragEvent, useCallback, useMemo, useState } from 'react'
 import ReactFlow, {
-  MiniMap,
-  Controls,
   Background,
-  useNodesState,
-  useEdgesState,
-  addEdge,
-  Node,
   Connection,
+  Controls,
+  MiniMap,
+  Node,
+  addEdge,
+  useEdgesState,
+  useNodesState,
 } from 'reactflow'
 
-// Custom nodes.
+import { initialEdges } from './database/initialEdges'
+import { initialNodes } from './database/initialNodes'
+
+import { CreateNodeModal } from './components/CreateNode/CreateNode.modal'
+import { isOpenAtom } from './components/CreateNode/createNode.atom'
+import { ToolsPanel } from './components/ToolsPanel'
+
+import { CompanyNode } from './nodes/CompanyNode'
 import { GroupNode } from './nodes/GroupNode'
 import { PermissionNode } from './nodes/PermissionNode'
 import { UserNode } from './nodes/UserNode'
-import { CompanyNode } from './nodes/CompanyNode'
 
 const nodeColor = ({ type }: Node) => {
   switch (type) {

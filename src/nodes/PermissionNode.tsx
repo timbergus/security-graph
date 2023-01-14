@@ -1,5 +1,6 @@
 import { FC } from 'react'
 import { Handle, NodeProps, Position } from 'reactflow'
+
 import { NodeData } from '../types/Data'
 
 type PermissionNodeProps = NodeProps<NodeData>

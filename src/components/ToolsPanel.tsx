@@ -1,5 +1,6 @@
 import { DragEvent, FC } from 'react'
 import { Panel } from 'reactflow'
+
 import { NodeType } from '../database/initialNodes'
 
 type ToolsPanelProps = {
