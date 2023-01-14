@@ -3,7 +3,7 @@ import { Dialog, Transition } from '@headlessui/react'
 import { useAtom } from 'jotai'
 import { isOpenAtom } from './createNode.atom'
 import { SubmitHandler } from 'react-hook-form'
-import { CreateNodeForm } from './createNode.form'
+import { CreateNodeForm } from './CreateNode.form'
 
 type FormInput = {
   name: string
