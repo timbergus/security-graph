@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
@@ -8,4 +9,16 @@ export default defineConfig({
     outDir: 'docs',
   },
   plugins: [react()],
+  test: {
+    coverage: {
+      include: ['src/**/*.ts'],
+      exclude: [
+        'src/types',
+        'src/**/*.d.ts',
+        'src/**/*.atom.ts',
+        'src/**/*.test.ts',
+      ],
+      all: true,
+    },
+  },
 })
