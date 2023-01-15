@@ -9,6 +9,7 @@
     }
   },
   "extends": [
+    "prettier",
     "eslint:recommended",
     "plugin:react/recommended",
     "plugin:@typescript-eslint/recommended",
@@ -55,6 +56,14 @@
       "never"
     ],
     "react/jsx-uses-react": "off",
-    "react/react-in-jsx-scope": "off"
+    "react/react-in-jsx-scope": "off",
+    "react/jsx-no-useless-fragment": "error",
+    "react/jsx-pascal-case": "error",
+    "react/no-multi-comp": "warn",
+    "react/self-closing-comp": "error",
+    "arrow-body-style": [
+      "error",
+      "as-needed"
+    ]
   }
 }
